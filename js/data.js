@@ -1,0 +1,270 @@
+// REAL-WORLD INDIAN MEDICINE DATASET & INVOICE HISTORY FOR CUREPOINT PHARMACY
+
+const mockMedicines = [
+    {
+        id: 101,
+        brandName: "Dolo 650 Tablet",
+        saltName: "Paracetamol (650mg)",
+        category: "Analgesics",
+        manufacturer: "Micro Labs Ltd",
+        batchNo: "DL-2024-99",
+        rackLocation: "Rack A-1, Shelf 2",
+        mfgDate: "2024-01-10",
+        expiryDate: "2027-01-15",
+        stockQty: 450,
+        minSafeQty: 100,
+        purchasePrice: 22.00,
+        mrp: 30.91,
+        aiPredictedDemand: 600,
+        supplier: "Apollo Pharma Wholesalers",
+        barcode: "8901086001234",
+        status: "SAFE"
+    },
+    {
+        id: 102,
+        brandName: "Augmentin 625 Duo Tablet",
+        saltName: "Amoxicillin (500mg) + Clavulanic Acid (125mg)",
+        category: "Antibiotics",
+        manufacturer: "GlaxoSmithKline Pharma",
+        batchNo: "AUG-2024-88",
+        rackLocation: "Rack A-2, Shelf 1",
+        mfgDate: "2024-03-10",
+        expiryDate: "2026-10-15",
+        stockQty: 180,
+        minSafeQty: 50,
+        purchasePrice: 142.50,
+        mrp: 201.70,
+        aiPredictedDemand: 220,
+        supplier: "Apollo Pharma Wholesalers",
+        barcode: "8901086005555",
+        status: "SAFE"
+    },
+    {
+        id: 103,
+        brandName: "Azithral 500 Tablet",
+        saltName: "Azithromycin (500mg)",
+        category: "Antibiotics",
+        manufacturer: "Alembic Pharmaceuticals",
+        batchNo: "AZ-99120",
+        rackLocation: "Rack A-3, Shelf 3",
+        mfgDate: "2023-11-01",
+        expiryDate: "2026-10-10",
+        stockQty: 95,
+        minSafeQty: 40,
+        purchasePrice: 88.00,
+        mrp: 119.50,
+        aiPredictedDemand: 140,
+        supplier: "Sun Pharma Distributors",
+        barcode: "8901123456789",
+        status: "CRITICAL"
+    },
+    {
+        id: 104,
+        brandName: "Telma 40 Tablet",
+        saltName: "Telmisartan (40mg)",
+        category: "Cardiology",
+        manufacturer: "Glenmark Pharmaceuticals",
+        batchNo: "TL-55102",
+        rackLocation: "Rack B-1, Shelf 1",
+        mfgDate: "2023-09-10",
+        expiryDate: "2026-10-05",
+        stockQty: 150,
+        minSafeQty: 60,
+        purchasePrice: 72.00,
+        mrp: 108.00,
+        aiPredictedDemand: 180,
+        supplier: "Sun Pharma Distributors",
+        barcode: "8902233445566",
+        status: "CRITICAL"
+    },
+    {
+        id: 105,
+        brandName: "Glycomet GP 2 Tablet",
+        saltName: "Metformin (500mg) + Glimepiride (2mg)",
+        category: "Diabetic",
+        manufacturer: "USV Private Limited",
+        batchNo: "GLY-30411",
+        rackLocation: "Rack B-3, Shelf 4",
+        mfgDate: "2023-12-01",
+        expiryDate: "2026-11-20",
+        stockQty: 210,
+        minSafeQty: 80,
+        purchasePrice: 110.00,
+        mrp: 158.00,
+        aiPredictedDemand: 250,
+        supplier: "Apollo Pharma Wholesalers",
+        barcode: "8903344556677",
+        status: "WARNING"
+    },
+    {
+        id: 106,
+        brandName: "Pantocid 40 Tablet",
+        saltName: "Pantoprazole (40mg)",
+        category: "Gastroenterology",
+        manufacturer: "Sun Pharmaceutical Industries",
+        batchNo: "PAN-88902",
+        rackLocation: "Rack C-1, Shelf 2",
+        mfgDate: "2023-08-15",
+        expiryDate: "2026-09-01",
+        stockQty: 45,
+        minSafeQty: 50,
+        purchasePrice: 90.00,
+        mrp: 145.00,
+        aiPredictedDemand: 130,
+        supplier: "Sun Pharma Distributors",
+        barcode: "8904455667788",
+        status: "EXPIRED"
+    },
+    {
+        id: 107,
+        brandName: "Shelcal 500 Tablet",
+        saltName: "Calcium (500mg) + Vitamin D3 (250 IU)",
+        category: "Vitamins",
+        manufacturer: "Torrent Pharmaceuticals",
+        batchNo: "SH-10294",
+        rackLocation: "Rack C-4, Shelf 1",
+        mfgDate: "2024-02-01",
+        expiryDate: "2026-12-15",
+        stockQty: 310,
+        minSafeQty: 75,
+        purchasePrice: 85.00,
+        mrp: 131.00,
+        aiPredictedDemand: 300,
+        supplier: "MedPlus Logistics",
+        barcode: "8905566778899",
+        status: "SAFE"
+    },
+    {
+        id: 108,
+        brandName: "Montair LC Tablet",
+        saltName: "Montelukast (10mg) + Levocetirizine (5mg)",
+        category: "Anti-Allergic",
+        manufacturer: "Cipla Ltd",
+        batchNo: "MNT-44102",
+        rackLocation: "Rack D-2, Shelf 3",
+        mfgDate: "2023-10-10",
+        expiryDate: "2026-11-05",
+        stockQty: 18,
+        minSafeQty: 60,
+        purchasePrice: 140.00,
+        mrp: 215.00,
+        aiPredictedDemand: 160,
+        supplier: "Apollo Pharma Wholesalers",
+        barcode: "8906677889900",
+        status: "WARNING"
+    }
+];
+
+const mockCustomers = [
+    {
+        name: "Suresh Kumar Patel",
+        phone: "+91 98230 44123",
+        condition: "Type 2 Diabetes & Hypertension",
+        medicines: "Glycomet GP2, Telma 40",
+        lastPurchase: "2026-08-25",
+        nextRefill: "2026-09-25",
+        status: "REFILL_DUE"
+    },
+    {
+        name: "Meena Devi Sharma",
+        phone: "+91 94112 88765",
+        condition: "Osteoporosis & Joint Pain",
+        medicines: "Shelcal 500, Dolo 650",
+        lastPurchase: "2026-09-01",
+        nextRefill: "2026-10-01",
+        status: "ACTIVE"
+    },
+    {
+        name: "Vikramaditya Singh",
+        phone: "+91 97654 32109",
+        condition: "Chronic Asthma & Allergy",
+        medicines: "Montair LC, Foracort 200",
+        lastPurchase: "2026-08-10",
+        nextRefill: "2026-09-10",
+        status: "OVERDUE"
+    }
+];
+
+// SALES INVOICE HISTORY DATASET
+const mockInvoices = [
+    {
+        invoiceNo: "INV-2026-0891",
+        date: "2026-09-23 16:45",
+        customerName: "Ramesh Pawar",
+        customerPhone: "+91 98765 11223",
+        paymentMode: "UPI",
+        totalAmount: 512.61,
+        itemsCount: 3,
+        status: "COMPLETED",
+        items: [
+            { brandName: "Augmentin 625 Duo", batchNo: "AUG-2024-88", qty: 1, unitPrice: 201.70 },
+            { brandName: "Dolo 650 Tablet", batchNo: "DL-2024-99", qty: 2, unitPrice: 30.91 },
+            { brandName: "Shelcal 500 Tablet", batchNo: "SH-10294", qty: 1, unitPrice: 131.00 }
+        ]
+    },
+    {
+        invoiceNo: "INV-2026-0890",
+        date: "2026-09-23 15:20",
+        customerName: "Suresh Kumar Patel",
+        customerPhone: "+91 98230 44123",
+        paymentMode: "CASH",
+        totalAmount: 266.00,
+        itemsCount: 2,
+        status: "COMPLETED",
+        items: [
+            { brandName: "Telma 40 Tablet", batchNo: "TL-55102", qty: 1, unitPrice: 108.00 },
+            { brandName: "Glycomet GP 2 Tablet", batchNo: "GLY-30411", qty: 1, unitPrice: 158.00 }
+        ]
+    },
+    {
+        invoiceNo: "INV-2026-0889",
+        date: "2026-09-23 14:10",
+        customerName: "Meena Devi Sharma",
+        customerPhone: "+91 94112 88765",
+        paymentMode: "CARD",
+        totalAmount: 434.50,
+        itemsCount: 2,
+        status: "COMPLETED",
+        items: [
+            { brandName: "Shelcal 500 Tablet", batchNo: "SH-10294", qty: 2, unitPrice: 131.00 },
+            { brandName: "Montair LC Tablet", batchNo: "MNT-44102", qty: 1, unitPrice: 172.50 }
+        ]
+    },
+    {
+        invoiceNo: "INV-2026-0888",
+        date: "2026-09-22 18:30",
+        customerName: "Anil Kadam",
+        customerPhone: "+91 98221 55443",
+        paymentMode: "UPI",
+        totalAmount: 123.64,
+        itemsCount: 1,
+        status: "COMPLETED",
+        items: [
+            { brandName: "Dolo 650 Tablet", batchNo: "DL-2024-99", qty: 4, unitPrice: 30.91 }
+        ]
+    }
+];
+
+const mockPrescriptions = {
+    sample1: {
+        imgUrl: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&auto=format&fit=crop&q=80",
+        doctor: "Dr. A. K. Roy (MD, Internal Medicine)",
+        patient: "Ramesh Pawar",
+        confidence: "95.2%",
+        medicines: [
+            { name: "Augmentin 625 Duo", dosage: "1 Tablet Twice Daily (1-0-1) x 5 Days", matchedSalt: "Amoxicillin + Clavulanic Acid", stock: "180 Available", status: "In Stock" },
+            { name: "Dolo 650 Tablet", dosage: "1 Tablet when fever > 100°F (SOS)", matchedSalt: "Paracetamol 650mg", stock: "450 Available", status: "In Stock" },
+            { name: "Pantocid 40", dosage: "1 Tablet before breakfast (1-0-0)", matchedSalt: "Pantoprazole 40mg", stock: "45 (Expired Batch Alert!)", status: "Batch Warning" }
+        ]
+    },
+    sample2: {
+        imgUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80",
+        doctor: "Dr. Sunita Deshmukh (Cardiologist)",
+        patient: "Suresh Kumar Patel",
+        confidence: "98.1%",
+        medicines: [
+            { name: "Telma 40", dosage: "1 Tablet Daily Morning", matchedSalt: "Telmisartan 40mg", stock: "150 Available (<30d Expiry FEFO)", status: "Near Expiry Alert" },
+            { name: "Glycomet GP 2", dosage: "1 Tablet Twice Daily after meals", matchedSalt: "Metformin + Glimepiride", stock: "210 Available", status: "In Stock" }
+        ]
+    }
+};
