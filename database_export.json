@@ -1,15 +1,4 @@
-// CUREPOINT PHARMACY DATA MODULE
-// Static data removed from active UI arrays by default.
-// Use DBLoader.loadFromJSON() or the "Load Database Data" UI button to import data whenever needed.
-
-// Active UI datasets (Starts Empty as requested)
-const mockMedicines = [];
-const mockCustomers = [];
-const mockInvoices = [];
-const mockPrescriptions = {};
-
-// Full Database Export Backup (for offline / file:// dynamic database seeding)
-const DEFAULT_EXPORTED_DATA = {
+{
   "medicines": [
     {
       "id": 101,
@@ -277,4 +266,4 @@ const DEFAULT_EXPORTED_DATA = {
       ]
     }
   }
-};
+}

@@ -307,6 +307,18 @@ function renderInvoiceHistory() {
         inv.customerPhone.includes(searchVal)
     );
 
+    if (filtered.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-4 text-muted">
+                    <i class="fa-solid fa-receipt fa-2x mb-2 opacity-40"></i>
+                    <p>No invoice records found. Click <strong>'Load DB Data'</strong> above to load database records.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
     tbody.innerHTML = filtered.map(inv => `
         <tr>
             <td><code class="text-accent">${inv.invoiceNo}</code></td>
@@ -401,7 +413,10 @@ function renderOverview() {
     const overviewExpiryTable = document.getElementById("overview-expiry-table");
     const urgentItems = inventoryData.filter(i => i.status === "CRITICAL" || i.status === "EXPIRED" || i.status === "WARNING").slice(0, 4);
 
-    overviewExpiryTable.innerHTML = urgentItems.map(item => `
+    if (urgentItems.length === 0) {
+        overviewExpiryTable.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">No expiry risk items found. Click 'Load DB Data' to load database.</td></tr>`;
+    } else {
+        overviewExpiryTable.innerHTML = urgentItems.map(item => `
         <tr>
             <td>
                 <strong>${item.brandName}</strong>
@@ -417,11 +432,15 @@ function renderOverview() {
             </td>
         </tr>
     `).join('');
+    }
 
     const overviewRestockTable = document.getElementById("overview-restock-table");
     const lowStockItems = inventoryData.filter(i => i.stockQty <= i.minSafeQty || i.status === "WARNING");
 
-    overviewRestockTable.innerHTML = lowStockItems.map(item => `
+    if (lowStockItems.length === 0) {
+        overviewRestockTable.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">No low stock items found. Click 'Load DB Data' to load database.</td></tr>`;
+    } else {
+        overviewRestockTable.innerHTML = lowStockItems.map(item => `
         <tr>
             <td>
                 <strong>${item.brandName}</strong>
@@ -433,6 +452,7 @@ function renderOverview() {
             <td><span class="text-sm">${item.supplier}</span></td>
         </tr>
     `).join('');
+    }
 }
 
 // Render Master Inventory Table
@@ -452,6 +472,18 @@ function renderInventory() {
 
         return matchesSearch && matchesCat && matchesExp;
     });
+
+    if (filtered.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="9" class="text-center py-4 text-muted">
+                    <i class="fa-solid fa-boxes-stacked fa-2x mb-2 opacity-40"></i>
+                    <p>No inventory records found. Click <strong>'Load DB Data'</strong> above to load database records.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
 
     tableBody.innerHTML = filtered.map(item => {
         let badgeClass = "badge-success";
@@ -502,7 +534,17 @@ function renderExpiryAlerts() {
     document.getElementById("exp-count-90").innerText = `${count90} Batches`;
     document.getElementById("nav-expiry-count").innerText = expiryItems.length;
 
-    tbody.innerHTML = expiryItems.map(item => `
+    if (expiryItems.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-4 text-muted">
+                    <i class="fa-solid fa-shield-halved fa-2x mb-2 text-success opacity-40"></i>
+                    <p>No near-expiry alert items found. Click <strong>'Load DB Data'</strong> above to load database records.</p>
+                </td>
+            </tr>
+        `;
+    } else {
+        tbody.innerHTML = expiryItems.map(item => `
         <tr>
             <td><code class="text-accent">${item.batchNo}</code></td>
             <td>
@@ -526,11 +568,24 @@ function renderExpiryAlerts() {
             </td>
         </tr>
     `).join('');
+    }
 }
 
 // Render Customers
 function renderCustomers() {
     const tbody = document.getElementById("customers-table-body");
+    if (mockCustomers.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-4 text-muted">
+                    <i class="fa-solid fa-users fa-2x mb-2 opacity-40"></i>
+                    <p>No patient refill records found. Click <strong>'Load DB Data'</strong> above to load database records.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
     tbody.innerHTML = mockCustomers.map(c => `
         <tr>
             <td><strong>${c.name}</strong></td>
