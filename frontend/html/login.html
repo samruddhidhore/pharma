@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MedCore RX — Pharmacist Login</title>
+  
+  <!-- External Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/frontend/css/login.css">
+</head>
+<body>
+
+  <div id="login-screen">
+    <!-- Visual Side Panel -->
+    <div class="login-visual">
+      <div>
+        <div class="rx-mark"><i class="bi bi-capsule"></i></div>
+        <h1>Run the counter at the speed of the queue, not the ledger.</h1>
+        <p>MedCore RX reads prescriptions and supplier invoices automatically, tracks every batch to its expiry date, and bills patients in seconds.</p>
+      </div>
+      <div class="login-stat-row">
+        <div><div class="n" id="login-stat-meds">1,240+</div><div class="l">Medicines tracked</div></div>
+        <div><div class="n">98.4%</div><div class="l">OCR accuracy</div></div>
+        <div><div class="n">&lt;10s</div><div class="l">Avg. bill time</div></div>
+      </div>
+    </div>
+
+    <!-- Login Form Panel -->
+    <div class="login-panel">
+      <div class="login-card">
+        <div class="eyebrow">MedCore RX</div>
+        <h2>Pharmacist sign in</h2>
+        <p class="sub">Enter your counter credentials to open today's register.</p>
+        
+        <form id="login-form">
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.83rem;font-weight:600;">Pharmacist ID / Email</label>
+            <input type="email" id="loginEmail" class="form-control form-control-pharm" value="r.deshmukh@medcorerx.in" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.83rem;font-weight:600;">Password</label>
+            <input type="password" id="loginPassword" class="form-control form-control-pharm" value="••••••••••" required>
+          </div>
+          <div class="d-flex align-items-center justify-content-between mb-3" style="font-size:.82rem;">
+            <label class="d-flex align-items-center gap-2" style="color:var(--ink-muted);"><input type="checkbox" checked> Keep me signed in</label>
+            <a href="#" style="color:var(--primary); font-weight:600;">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn btn-pharm-primary w-100" id="loginSubmitBtn">
+            Sign in to counter <i class="bi bi-arrow-right ms-1"></i>
+          </button>
+        </form>
+        
+        <div class="demo-hint">
+          <i class="bi bi-info-circle me-1"></i> Pre-filled credentials will execute full backend authentication sequence.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script src="/frontend/js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MedCore RX — Pharmacy Intelligence &amp; Automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="/frontend/css/style.css">
+</head>
+<body>
+
+<!-- ================= APP SHELL ================= -->
+<div id="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="mark"><i class="bi bi-capsule"></i></div>
+      <div>
+        <div class="name">MedCore RX</div>
+        <div class="sub">PHARMACY INTELLIGENCE</div>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <div class="grp-label">Overview</div>
+      <div class="nav-item active" data-page="dashboard"><i class="bi bi-grid-1x2"></i> Dashboard</div>
+
+      <div class="grp-label">Prescriptions</div>
+      <div class="nav-item" data-page="scanner"><i class="bi bi-camera"></i> Prescription Scanner</div>
+      <div class="nav-item" data-page="billing"><i class="bi bi-receipt"></i> Billing</div>
+
+      <div class="grp-label">Inventory</div>
+      <div class="nav-item" data-page="inventory"><i class="bi bi-boxes"></i> Inventory</div>
+      <div class="nav-item" data-page="addstock"><i class="bi bi-upc-scan"></i> Add Stock via OCR</div>
+      <div class="nav-item" data-page="expiry"><i class="bi bi-hourglass-split"></i> Expiry Management <span class="badge-pill" id="expiry-badge">0</span></div>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="pharmacist">
+        <div class="avatar" id="userAvatar">RD</div>
+        <div class="who">
+          <b id="userName">Rhea Deshmukh</b>
+          <span id="userRole">Registered Pharmacist</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-col">
+    <div class="topbar">
+      <button class="icon-btn sidebar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
+      <div>
+        <div class="page-title" id="topbar-title">Dashboard</div>
+        <div class="page-sub" id="topbar-sub">Overview of today's counter activity</div>
+      </div>
+      <div class="search-box"><i class="bi bi-search"></i><input type="text" id="globalSearch" placeholder="Search medicines, bills, batches…" oninput="handleGlobalSearch(this.value)"></div>
+      <button class="icon-btn"><i class="bi bi-bell"></i><span class="dot"></span></button>
+      <button class="icon-btn" id="themeToggle"><i class="bi bi-moon"></i></button>
+    </div>
+
+    <div class="content">
+
+      <!-- ========== PAGE: DASHBOARD ========== -->
+      <section class="page active" id="page-dashboard">
+        <div class="stat-grid" id="stat-grid"></div>
+
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="card-pharm">
+              <div class="section-head">
+                <div>
+                  <h5>Low stock alerts</h5>
+                  <p>Medicines below reorder threshold</p>
+                </div>
+                <button class="btn btn-pharm-outline btn-sm" onclick="goPage('inventory')">View inventory</button>
+              </div>
+              <div class="table-wrap">
+                <table class="table-pharm" id="low-stock-table"></table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="card-pharm">
+              <div class="section-head">
+                <div>
+                  <h5>Near-expiry batches</h5>
+                  <p>Within the next 60 days</p>
+                </div>
+                <button class="btn btn-pharm-outline btn-sm" onclick="goPage('expiry')">Manage</button>
+              </div>
+              <div class="table-wrap">
+                <table class="table-pharm" id="near-expiry-table"></table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-pharm mt-3">
+          <div class="section-head">
+            <div>
+              <h5>Recent bills</h5>
+              <p>Latest billing activity at this counter</p>
+            </div>
+            <button class="btn btn-pharm-primary btn-sm" onclick="goPage('scanner')"><i class="bi bi-plus-lg me-1"></i>New bill</button>
+          </div>
+          <div class="table-wrap">
+            <table class="table-pharm" id="recent-bills-table"></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== PAGE: PRESCRIPTION SCANNER ========== -->
+      <section class="page" id="page-scanner">
+        <div class="section-head">
+          <div>
+            <h5>Prescription Scanner</h5>
+            <p>Upload or capture a prescription — MedCore RX OCR will extract the medicines automatically</p>
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card-pharm h-100">
+              <label class="upload-zone" for="rxFileInput" id="rxUploadZone">
+                <div class="up-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                <h6>Drop prescription image here</h6>
+                <p>or click to browse · JPG, PNG, PDF up to 10MB</p>
+                <div class="d-flex gap-2 mt-3">
+                  <span class="btn btn-pharm-outline btn-sm"><i class="bi bi-folder2-open me-1"></i>Browse files</span>
+                  <span class="btn btn-pharm-outline btn-sm"><i class="bi bi-camera me-1"></i>Use camera</span>
+                </div>
+              </label>
+              <input type="file" id="rxFileInput" accept="image/*" class="d-none">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card-pharm h-100">
+              <h6 class="mb-2" style="font-family:var(--font-display); font-weight:700; font-size:.92rem;">Preview</h6>
+              <div class="preview-box" id="rxPreviewBox">
+                <div class="preview-placeholder"><i class="bi bi-file-earmark-medical" style="font-size:2rem;"></i><br>No prescription uploaded yet</div>
+              </div>
+              <button class="btn btn-pharm-primary w-100 mt-3" id="scanRxBtn" disabled><i class="bi bi-magic me-1"></i>Scan Prescription</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="rxResults" style="display:none;">
+          <div class="row g-3 mt-1">
+            <div class="col-lg-5">
+              <div class="card-pharm h-100">
+                <h6 style="font-family:var(--font-display); font-weight:700; font-size:.92rem;">Extracted text</h6>
+                <div class="ocr-text-box mt-2" id="ocrTextBox"></div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="card-pharm h-100">
+                <div class="section-head" style="margin-bottom:10px;">
+                  <div>
+                    <h5 style="font-size:.92rem;">Detected medicines</h5>
+                    <p>Review confidence scores before billing</p>
+                  </div>
+                </div>
+                <div class="table-wrap">
+                  <table class="table-pharm">
+                    <thead><tr><th>Medicine</th><th>Strength</th><th>Dosage</th><th>Qty</th><th>Confidence</th></tr></thead>
+                    <tbody id="rxDetectedBody"></tbody>
+                  </table>
+                </div>
+                <button class="btn btn-pharm-primary w-100 mt-3" onclick="verifyAndBill()"><i class="bi bi-check2-circle me-1"></i>Verify &amp; Generate Bill</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== PAGE: BILLING ========== -->
+      <section class="page" id="page-billing">
+        <div class="section-head">
+          <div>
+            <h5>Billing</h5>
+            <p>Confirm medicines and generate the patient invoice</p>
+          </div>
+          <button class="btn btn-pharm-outline btn-sm" onclick="addBillRow()"><i class="bi bi-plus-lg me-1"></i>Add medicine</button>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-lg-4">
+            <div class="card-pharm">
+              <h6 style="font-family:var(--font-display); font-weight:700; font-size:.9rem;">Patient details</h6>
+              <div class="mb-2 mt-3">
+                <label class="form-label" style="font-size:.8rem;">Patient name</label>
+                <input type="text" class="form-control form-control-pharm" id="patName" placeholder="e.g. Anjali Kulkarni">
+              </div>
+              <div class="mb-2">
+                <label class="form-label" style="font-size:.8rem;">Age / Gender</label>
+                <input type="text" class="form-control form-control-pharm" id="patAge" placeholder="e.g. 34 / Female">
+              </div>
+              <div class="mb-2">
+                <label class="form-label" style="font-size:.8rem;">Contact number</label>
+                <input type="text" class="form-control form-control-pharm" id="patPhone" placeholder="e.g. +91 98230 11245">
+              </div>
+              <div class="mb-2">
+                <label class="form-label" style="font-size:.8rem;">Prescribing doctor</label>
+                <input type="text" class="form-control form-control-pharm" id="patDoctor" placeholder="e.g. Dr. S. R. Naik, MD">
+              </div>
+              <div class="mb-0">
+                <label class="form-label" style="font-size:.8rem;">Payment mode</label>
+                <select class="form-select form-control-pharm" id="patPayment">
+                  <option value="UPI">UPI</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Card">Card</option>
+                  <option value="Insurance">Insurance</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="card-pharm">
+              <h6 style="font-family:var(--font-display); font-weight:700; font-size:.9rem;">Medicines</h6>
+              <div class="table-wrap mt-2">
+                <table class="table-pharm">
+                  <thead><tr><th>Medicine</th><th>Qty</th><th>Unit price</th><th>GST</th><th>Subtotal</th><th></th></tr></thead>
+                  <tbody id="billBody"></tbody>
+                </table>
+              </div>
+              <div class="inv-totals" id="billTotals"></div>
+              <div class="d-flex gap-2 justify-content-end mt-3">
+                <button class="btn btn-pharm-outline btn-sm" onclick="goPage('scanner')"><i class="bi bi-arrow-left me-1"></i>Back to scan</button>
+                <button class="btn btn-pharm-primary btn-sm" onclick="generateBill()"><i class="bi bi-receipt-cutoff me-1"></i>Generate Bill</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== PAGE: INVENTORY ========== -->
+      <section class="page" id="page-inventory">
+        <div class="section-head">
+          <div>
+            <h5>Inventory</h5>
+            <p>All medicines currently on record at this pharmacy</p>
+          </div>
+          <div class="d-flex gap-2">
+            <div class="search-box" style="width:220px; margin-left:0;"><i class="bi bi-search"></i><input type="text" id="invSearch" placeholder="Search medicine…" oninput="renderInventory()"></div>
+            <button class="btn btn-pharm-primary btn-sm" data-bs-toggle="modal" data-bs-target="#medicineModal" onclick="openMedicineModal()"><i class="bi bi-plus-lg me-1"></i>Add medicine</button>
+          </div>
+        </div>
+        <div class="card-pharm">
+          <div class="table-wrap">
+            <table class="table-pharm">
+              <thead><tr><th>Medicine</th><th>Batch no.</th><th>Expiry</th><th>Qty</th><th>Price</th><th>Status</th><th></th></tr></thead>
+              <tbody id="inventoryBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== PAGE: ADD STOCK VIA OCR ========== -->
+      <section class="page" id="page-addstock">
+        <div class="section-head">
+          <div>
+            <h5>Add Stock via OCR</h5>
+            <p>Upload a supplier invoice — line items are extracted and added to inventory automatically</p>
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card-pharm h-100">
+              <label class="upload-zone" for="invFileInput" id="invUploadZone">
+                <div class="up-icon"><i class="bi bi-file-earmark-arrow-up"></i></div>
+                <h6>Drop supplier invoice here</h6>
+                <p>or click to browse · JPG, PNG, PDF up to 10MB</p>
+                <span class="btn btn-pharm-outline btn-sm mt-3"><i class="bi bi-folder2-open me-1"></i>Browse files</span>
+              </label>
+              <input type="file" id="invFileInput" accept="image/*" class="d-none">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card-pharm h-100">
+              <h6 class="mb-2" style="font-family:var(--font-display); font-weight:700; font-size:.92rem;">Invoice preview</h6>
+              <div class="preview-box" id="invPreviewBox">
+                <div class="preview-placeholder"><i class="bi bi-receipt" style="font-size:2rem;"></i><br>No invoice uploaded yet</div>
+              </div>
+              <button class="btn btn-pharm-primary w-100 mt-3" id="scanInvBtn" disabled><i class="bi bi-upc-scan me-1"></i>Scan Invoice</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="invResults" style="display:none;" class="card-pharm mt-3">
+          <div class="section-head" style="margin-bottom:10px;">
+            <div>
+              <h5 style="font-size:.92rem;">Extracted medicine information</h5>
+              <p>Edit any field before adding to inventory</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="table-pharm">
+              <thead><tr><th>Medicine</th><th>Batch no.</th><th>Expiry</th><th>Qty received</th><th>Unit price</th></tr></thead>
+              <tbody id="invDetectedBody"></tbody>
+            </table>
+          </div>
+          <button class="btn btn-pharm-primary mt-3" onclick="verifyAndAddStock()"><i class="bi bi-check2-circle me-1"></i>Verify and Add Stock</button>
+        </div>
+      </section>
+
+      <!-- ========== PAGE: EXPIRY MANAGEMENT ========== -->
+      <section class="page" id="page-expiry">
+        <div class="section-head">
+          <div>
+            <h5>Expiry Management</h5>
+            <p>Batch-level expiry tracking across the full inventory</p>
+          </div>
+          <div class="pill-tabs" id="expiryTabs">
+            <button class="active" data-tab="expired">Expired</button>
+            <button data-tab="soon">Expiring soon</button>
+            <button data-tab="safe">Safe stock</button>
+          </div>
+        </div>
+        <div class="row g-3 mb-1">
+          <div class="col-md-4">
+            <div class="card-pharm" style="border-left:3px solid var(--danger);">
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="font-size:.8rem; color:var(--ink-faint);">Expired batches</span>
+                <i class="bi bi-x-octagon" style="color:var(--danger);"></i>
+              </div>
+              <div class="stat-num" id="cnt-expired">0</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card-pharm" style="border-left:3px solid var(--warn);">
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="font-size:.8rem; color:var(--ink-faint);">Expiring within 60 days</span>
+                <i class="bi bi-hourglass-split" style="color:var(--warn);"></i>
+              </div>
+              <div class="stat-num" id="cnt-soon">0</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card-pharm" style="border-left:3px solid var(--accent);">
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="font-size:.8rem; color:var(--ink-faint);">Safe stock</span>
+                <i class="bi bi-shield-check" style="color:var(--accent);"></i>
+              </div>
+              <div class="stat-num" id="cnt-safe">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-pharm">
+          <div class="table-wrap">
+            <table class="table-pharm">
+              <thead><tr><th>Medicine</th><th>Batch no.</th><th>Expiry date</th><th>Days left</th><th>Qty in stock</th><th>Status</th></tr></thead>
+              <tbody id="expiryBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ MEDICINE MODAL ============ -->
+<div class="modal fade" id="medicineModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius:var(--radius-md); border:1px solid var(--border);">
+      <div class="modal-header" style="border-bottom:1px solid var(--border);">
+        <h6 class="modal-title" id="medModalTitle" style="font-family:var(--font-display); font-weight:700;">Add medicine</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="medEditId">
+        <div class="mb-2"><label class="form-label" style="font-size:.8rem;">Medicine name</label><input class="form-control form-control-pharm" id="medName" placeholder="e.g. Paracetamol 500mg"></div>
+        <div class="row g-2">
+          <div class="col-6 mb-2"><label class="form-label" style="font-size:.8rem;">Batch no.</label><input class="form-control form-control-pharm" id="medBatch" placeholder="e.g. BX-2291"></div>
+          <div class="col-6 mb-2"><label class="form-label" style="font-size:.8rem;">Expiry date</label><input type="date" class="form-control form-control-pharm" id="medExpiry"></div>
+        </div>
+        <div class="row g-2">
+          <div class="col-6 mb-2"><label class="form-label" style="font-size:.8rem;">Quantity</label><input type="number" class="form-control form-control-pharm" id="medQty" value="50"></div>
+          <div class="col-6 mb-2"><label class="form-label" style="font-size:.8rem;">Price (₹)</label><input type="number" step="0.01" class="form-control form-control-pharm" id="medPrice" value="20"></div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid var(--border);">
+        <button class="btn btn-pharm-outline btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-pharm-primary btn-sm" onclick="saveMedicine()">Save medicine</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ INVOICE PREVIEW MODAL ============ -->
+<div class="modal fade" id="invoiceModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius:var(--radius-md); border:1px solid var(--border);">
+      <div class="modal-header" style="border-bottom:1px solid var(--border);">
+        <h6 class="modal-title" style="font-family:var(--font-display); font-weight:700;">Invoice preview</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="invoice-preview" id="invoicePreviewContent"></div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid var(--border);">
+        <button class="btn btn-pharm-outline btn-sm" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-pharm-primary btn-sm" onclick="window.print()"><i class="bi bi-printer me-1"></i>Print invoice</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOASTS ============ -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="/frontend/js/script.js"></script>
+</body>
+</html>
